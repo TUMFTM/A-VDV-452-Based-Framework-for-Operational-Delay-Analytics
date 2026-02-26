@@ -1,0 +1,28 @@
+[project]
+name = "itsc-delay-pipeline"
+version = "0.1.0"
+description = "Anchor + likelihood based stop arrival reconstruction for IEEE ITSC reproducibility package."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Anonymous"}]
+dependencies = [
+  "numpy>=1.23",
+  "pandas>=2.0",
+  "geopandas>=0.14",
+  "shapely>=2.0",
+  "pyyaml>=6.0",
+  "requests>=2.31",
+  "folium>=0.15",
+  "typer>=0.9",
+  "matplotlib>=3.8",
+  "seaborn>=0.13",
+  "pillow>=10.0",
+]
+
+[project.scripts]
+itsc-delay = "itsc_delay_pipeline.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

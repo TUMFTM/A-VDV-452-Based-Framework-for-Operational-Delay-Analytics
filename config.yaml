@@ -1,0 +1,63 @@
+﻿run:
+  umlauf_id: "1749"
+
+paths:
+  soll_stops_csv: "data/soll_stops.csv"
+  vp_csv: "data/vp.csv"
+  fallback_segments_geojson: "data/fallback/soll_segments.geojson"
+  export_dir: "export"
+
+osrm:
+  base_url: "paste_url"
+  profile: "driving"
+  timeout_s: 20
+
+vp_load:
+  time_gate_load_min: 10
+
+arrivals:
+  time_gate_min: 10
+  likelihood_max_dist_m: 100.0
+  sigma_dist_m: 25.0
+  stop_anchor_dist_m: 75.0
+  stop_anchor_max_dt_min: 6
+
+edge_gap_fill:
+  only_first_last: true
+  stages:
+    - ["anchor_edge_narrow", 3, 100.0]
+    - ["anchor_edge_wide", 10, 300.0]
+
+anchor_vehicle_match:
+  anchor_time_buf_min: 8
+  anchor_dist_m: 200.0
+  k_nearest: 10
+  w_dt_s: 1.0
+  w_dist_m: 1.0
+  dt_scale_s: 60.0
+  dist_scale_m: 50.0
+  max_dt_s: 600
+  max_dist_m: 200.0
+  manual_vehicle_by_umlauf: {}
+
+viz:
+  max_plot_vp: 40000
+
+visualize_results:
+  tags: ["2026-01-08", "2026-01-15", "2026-01-22", "2026-01-29"]
+  match_threshold: 0.95
+  out_dir: export/Plots
+  fig_dpi: 1000
+
+  heatmap:
+    clip_min: -200
+    clip_max: 800
+
+  fig45:
+    min_occurrences: 2
+    fig4_delay_cap_min: 30
+    fig5_delay_cap_min: 120   # oder null
+    start_row: 0
+    max_plots: null
+    only_produktiv: true
+    split_on_fgr_change: true
