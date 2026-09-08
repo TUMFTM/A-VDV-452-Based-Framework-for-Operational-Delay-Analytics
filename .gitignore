@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.dist/
+build/
+.venv/
+.vscode/
+.ipynb_checkpoints/
+export/
+data/*.csv
+data/.orig_backup/
+
+data/.pseudonym_map.json
+Archiv/

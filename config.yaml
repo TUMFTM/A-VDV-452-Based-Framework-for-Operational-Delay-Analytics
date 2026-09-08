@@ -1,0 +1,81 @@
+# ITSC delay pipeline configuration.
+# Parameter values follow the calibration developed in the operational
+# open-transit-analytics pipeline; every value is explained in PARAMETERS.md.
+
+run:
+  umlauf_id: "1749"        # um_uid to process
+  tag: "2026-01-08"        # betriebstag (service day); override with --tag / --tags
+
+paths:
+  soll_stops_csv: "data/soll_stops.csv"
+  vp_csv: "data/vp.csv"
+  fallback_segments_geojson: "data/fallback/soll_segments.geojson"
+  export_dir: "export"
+
+osrm:
+  base_url: "http://localhost:5000"   # empty string -> use fallback GeoJSON segments
+  profile: "driving"
+  timeout_s: 20
+
+vp_load:
+  time_gate_load_min: 10   # widen the VP window this many minutes each side of the Umlauf
+
+# GTFS-RT feed-lag correction. Rows whose feed timestamp equals the scrape time
+# carry the feed's position AGE (~23 s old), not a true fix time; only those are
+# shifted back. See PARAMETERS.md, "Feed-lag".
+feed_lag:
+  fallback_lag_s: 14.3     # = median ping lag 22.0 s x absorption 0.65 (CALIBRATED)
+
+arrivals:
+  time_gate_min: 10               # VP window per Fahrt for arrival reconstruction
+  likelihood_max_dist_m: 50.0     # CALIBRATED (was 100): max ping->route distance for projection
+  sigma_dist_m: 25.0              # Gaussian width of the projection weight (50 m = 2 sigma)
+  stop_anchor_dist_m: 25.0        # CALIBRATED (was 75): strict-anchor stop radius
+  stop_anchor_max_dt_min: 6       # strict-anchor time tolerance
+  local_tz: "Europe/Berlin"
+
+edge_gap_fill:
+  only_first_last: true    # first/last stops sit outside any interpolation interval
+  stages:                  # [name, time_min, dist_m] -- aligned with OTA EDGE_STAGE_*
+    - ["anchor_edge_narrow", 3, 100.0]
+    - ["anchor_edge_wide", 10, 300.0]
+
+anchor_vehicle_match:
+  anchor_time_buf_min: 8
+  anchor_dist_m: 200.0     # VP anchor radius (ANCHOR_DIST_M_VP); capped by max_dist_m
+  k_nearest: 10
+  w_dt_s: 1.0
+  w_dist_m: 1.0
+  dt_scale_s: 60.0
+  dist_scale_m: 50.0
+  max_dt_s: 600
+  max_dist_m: 200.0
+  all_stops: true                 # OTA fix: vote with EVERY stop, not just first/last
+  # Size-aware confidence gate (BENCHMARKED). confident = mrel >= threshold,
+  # mrel = (top_hits - second_hits) / top_hits.
+  small_umlauf_max_fahrten: 5
+  confident_mrel_small: 0.7       # threshold for small Umlaeufe (<= 5 Fahrten)
+  confident_mrel_large: 0.4       # threshold for large Umlaeufe
+  manual_vehicle_by_umlauf: {}
+
+viz:
+  max_plot_vp: 40000
+
+visualize_results:
+  tags: ["2026-01-08", "2026-01-15", "2026-01-22", "2026-01-29"]
+  match_threshold: 0.95
+  out_dir: export/Plots
+  fig_dpi: 1000
+
+  heatmap:
+    clip_min: -200
+    clip_max: 800
+
+  fig45:
+    min_occurrences: 2
+    fig4_delay_cap_min: 30
+    fig5_delay_cap_min: 120   # or null
+    start_row: 0
+    max_plots: null
+    only_produktiv: true
+    split_on_fgr_change: true
