@@ -2,9 +2,10 @@
 
 A research-oriented Python pipeline for reconstructing bus arrival times from vehicle position (VP) data, matching vehicles via anchor stops, and generating publication-ready delay and layover visualizations.
 
-This project supports delay analysis, timetable robustness evaluation, and reproducible research workflows in public transport systems.
+Repository: [TUMFTM/A-VDV-452-Based-Framework-for-Operational-Delay-Analytics](https://github.com/TUMFTM/A-VDV-452-Based-Framework-for-Operational-Delay-Analytics)
+Contributors: [louisstillehoenig](https://github.com/louisstillehoenig), [TUMFTM](https://github.com/TUMFTM)
 
-> **Attribution.** This reproducibility package was re-founded with the support of **Claude Opus 4.8 (Anthropic)**: the vehicle-matching and delay-reconstruction parameters were brought in line with the calibrated operational pipeline behind the paper, and every parameter is documented in [`PARAMETERS.md`](PARAMETERS.md).
+This project supports delay analysis, timetable robustness evaluation, and reproducible research workflows in public transport systems. Every tunable parameter is documented in [`PARAMETERS.md`](PARAMETERS.md).
 
 > **Pseudonymized sample data.** The shipped data carries pseudonymized identifiers only — `vehicle_id` → `V0001…` and operator `unternehmen` → `Operator A…`. All coordinates, times, geometry and schedule structure are real and unchanged, so results are fully reproducible; only the labels are anonymized. See [`PARAMETERS.md`](PARAMETERS.md#pseudonymization-of-the-shipped-data) and `scripts/pseudonymize_data.py`.
 
@@ -93,32 +94,11 @@ viz.py # Interactive Folium map export
 Python 3.10 or newer is recommended.
 
 Clone the repository and install in editable mode:
-git clone https://github.com/
-<your-user>/open-transit-delay.git
-cd open-transit-delay
+git clone https://github.com/TUMFTM/A-VDV-452-Based-Framework-for-Operational-Delay-Analytics.git
+cd A-VDV-452-Based-Framework-for-Operational-Delay-Analytics
 pip install -e .
 
 
-Main dependencies:
-
-- pandas
-- geopandas
-- shapely
-- numpy
-- matplotlib
-- seaborn
-- folium
-- requests
-- typer
-- pyyaml
-
----
-
-## Usage
-
-All commands use a YAML configuration file.
-
-### Run pipeline
 Main dependencies:
 
 - pandas
@@ -166,6 +146,38 @@ itsc-delay visualize-results -c config.yaml
 
 itsc-delay run-all -c config.yaml
 
+
+---
+
+### Data import (VDV 452 → CSV)
+
+`data/soll_stops.csv` (the scheduled timetable the pipeline consumes) is built
+from a raw **VDV 452** drop — a directory of fixed-structure `.x10` files
+(`REC_FRT.X10`, `LID_VERLAUF.X10`, `REC_ORT.X10`, `REC_FRT_HZT.X10`,
+`SEL_FZT_FELD.X10`, `REC_SEL.X10`, `REC_UMLAUF.X10`, `MENGE_FZG_TYP.X10`,
+`MENGE_TAGESART.X10`, `FIRMENKALENDER.X10`, …). Reconstruct the CSV with:
+
+
+itsc-delay build-soll --vdv-dir path/to/VDV_drop --out data/soll_stops.csv
+itsc-delay build-soll --vdv-dir path/to/VDV_drop --out data/soll_stops.csv --betriebstag 2026-04-01
+
+
+One row per (Umlauf, Fahrt, stop): scheduled passing time, stop attributes and
+WGS84 point, operator, and per-segment travel time/distance. Without
+`--betriebstag`, each Fahrt's operating day is derived from `FIRMENKALENDER`.
+
+---
+
+### Teaching figure: how a delay is constructed
+
+
+itsc-delay viz-delay -c config.yaml
+
+
+Renders a small-subsample PNG (a few consecutive stops of one Fahrt) showing the
+route segments, the matched vehicle's GTFS-RT points, the reconstructed arrivals
+and the resulting per-stop `delay_s`. An inspection aid, separate from the paper
+figures. Output in `export/` (git-ignored).
 
 ---
 
@@ -246,7 +258,7 @@ Important sections:
 
 ## OSRM Support
 
-> **Reproduction prerequisite.** Segment geometries between stops come from an OSRM routing server (driving profile) for the study region. To reproduce, run your own OSRM instance and set `osrm.base_url` (the shipped config points at `http://localhost:5000`), **or** provide a precomputed `fallback_segments_geojson` with the schema below and leave `osrm.base_url` empty. Everything else (matching, delay reconstruction, figures) then runs offline on the shipped pseudonymized data.
+> **Reproduction prerequisite.** The shipped configuration uses the precomputed `data/fallback/soll_segments.geojson`, so the complete sample runs without an OSRM server. To use OSRM instead, set `osrm.base_url` to your routing server. Everything else (matching, delay reconstruction, figures) then runs offline on the shipped pseudonymized data.
 
 If `osrm.base_url` is defined in the configuration, route segments are generated dynamically.
 
@@ -258,3 +270,21 @@ edge_idx
 cum_start_m
 cum_end_m
 geometry
+
+
+---
+
+## Testing / demo
+
+`notebooks/test_pipeline.ipynb` runs the pipeline end-to-end on the shipped
+pseudonymized sample (one Umlauf/day): it matches a vehicle, shows the
+confidence gate, and reports per-stop `delay_s` — a quick way for users and
+reviewers to confirm the scripts work. The `examples/` directory holds minimal
+standalone usage scripts; `itsc-delay viz-delay` renders the delay-construction
+inspection figure.
+
+---
+
+## Acknowledgements
+
+Developed with the support of **Claude Opus 4.8 (Anthropic)**.

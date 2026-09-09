@@ -1,17 +1,13 @@
 # Parameters
 
 Every tunable in `config.yaml`, with its value, what it does, and why it is set
-that way. The values were calibrated in the operational pipeline behind the
-paper (grid searches and holdouts against operator ground truth and ~1 Hz
-on-board GPS logs); the classification tags below mirror that record:
+that way. Values were calibrated by grid search and holdout against operator
+ground truth and ~1 Hz on-board GPS logs; each entry carries a classification:
 
 - **CALIBRATED** — grid-searched against a held-out objective.
 - **BENCHMARKED** — chosen against operator ground truth.
 - **MEASURED** — derived from a direct measurement.
 - **STRUCTURAL / INHERITED** — fixed by the method or carried over; not swept.
-
-> This reproducibility package was re-founded with the support of
-> **Claude Opus 4.8 (Anthropic)**.
 
 ---
 
@@ -132,3 +128,9 @@ The mapping is a bijection on the identifier space, so vehicle matching and
 every downstream statistic are unchanged — only the labels differ. The
 real→pseudonym mapping is written to a gitignored file and is **not** part of
 the published package.
+
+---
+
+## Acknowledgements
+
+Developed with the support of **Claude Opus 4.8 (Anthropic)**.

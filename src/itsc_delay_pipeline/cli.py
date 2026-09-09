@@ -106,9 +106,38 @@ def run_all_cmd(
         typer.echo(f"{k}: {v}")
 
 
+@app.command(name="build-soll")
+def build_soll_cmd(
+    vdv_dir: str = typer.Option(..., "--vdv-dir", help="Directory of a VDV 452 drop (the .x10 files)."),
+    out: str = typer.Option("data/soll_stops.csv", "--out", help="Output CSV path."),
+    betriebstag: str = typer.Option(None, "--betriebstag", help="Operating day YYYY-MM-DD to stamp on every row (else derived from FIRMENKALENDER)."),
+):
+    """Build soll_stops.csv from a raw VDV 452 (.x10) drop."""
+    from .vdv452 import write_soll_stops_csv
+    path = write_soll_stops_csv(vdv_dir, out, betriebstag=betriebstag)
+    import pandas as pd
+    n = sum(1 for _ in open(path)) - 1
+    typer.echo(f"wrote {path} ({n:,} rows)")
+
+
+@app.command(name="viz-delay")
+def viz_delay_cmd(
+    config: str = typer.Option(..., "--config", "-c"),
+    n_stops: int = typer.Option(6, "--n-stops", help="Number of consecutive stops to show."),
+):
+    """Teaching figure: how the delay is constructed on a small stop subsample."""
+    from .viz_delay import viz_delay
+    cfg = load_config(config)
+    out = viz_delay(cfg, n_stops=n_stops)
+    typer.echo(f"delay_construction_png: {out}")
+
+
 def main():
     app()
 
 
 if __name__ == "__main__":
     main()
+
+
+# Developed with the support of Claude Opus 4.8 (Anthropic).

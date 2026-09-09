@@ -13,7 +13,7 @@ paths:
   export_dir: "export"
 
 osrm:
-  base_url: "http://localhost:5000"   # empty string -> use fallback GeoJSON segments
+  base_url: ""                        # use static fallback GeoJSON; no OSRM required
   profile: "driving"
   timeout_s: 20
 

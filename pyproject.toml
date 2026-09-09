@@ -5,7 +5,7 @@ description = "Anchor + likelihood based stop arrival reconstruction for IEEE IT
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
-authors = [{name = "Anonymous"}]
+authors = [{name = "louisstillehoenig"}, {name = "TUMFTM"}]
 dependencies = [
   "numpy>=1.23",
   "pandas>=2.0",
