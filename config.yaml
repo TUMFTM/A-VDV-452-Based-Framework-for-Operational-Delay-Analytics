@@ -4,11 +4,11 @@
 
 run:
   umlauf_id: "1749"        # um_uid to process
-  tag: "2026-01-08"        # betriebstag (service day); override with --tag / --tags
+  tag: "2026-01-15"        # betriebstag (service day); override with --tag / --tags
 
 paths:
-  soll_stops_csv: "data/soll_stops.csv"
-  vp_csv: "data/vp.csv"
+  soll_stops_csv: "data/sample/soll_stops.csv.gz"
+  vp_csv: "data/sample/vp.csv.gz"
   fallback_segments_geojson: "data/fallback/soll_segments.geojson"
   export_dir: "export"
 
