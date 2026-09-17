@@ -7,7 +7,7 @@ run:
   tag: "2026-01-15"        # betriebstag (service day); override with --tag / --tags
 
 paths:
-  soll_stops_csv: "data/sample/soll_stops.csv.gz"
+  soll_stops_csv: "data/sample/vdv452_data.csv.gz"
   vp_csv: "data/sample/vp.csv.gz"
   fallback_segments_geojson: "data/fallback/soll_segments.geojson"
   export_dir: "export"

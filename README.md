@@ -7,7 +7,7 @@ Contributors: [louisstillehoenig](https://github.com/louisstillehoenig), [TUMFTM
 
 This project supports delay analysis, timetable robustness evaluation, and reproducible research workflows in public transport systems. Every tunable parameter is documented in [`PARAMETERS.md`](PARAMETERS.md).
 
-> **Pseudonymized sample data.** The shipped data carries pseudonymized identifiers only — `vehicle_id` → `V0001…` and operator `unternehmen` → `Operator A…`. All coordinates, times, geometry and schedule structure are real and unchanged, so results are fully reproducible; only the labels are anonymized. See [`PARAMETERS.md`](PARAMETERS.md#pseudonymization-of-the-shipped-data) and `scripts/pseudonymize_data.py`.
+> **Pseudonymized sample data.** The shipped data carries pseudonymized identifiers only — `vehicle_id` → `V0001…` and operator `unternehmen` → `Operator A…`. Operator depots are likewise renamed to their pseudonymized operator (e.g. `Operator A Depot`), and each depot's published coordinate is cut back 500 m along its deadhead leg so no exact depot location is shipped. All other coordinates, times, geometry and schedule structure are real and unchanged, so results are fully reproducible; only the labels/depot positions above are anonymized. See [`PARAMETERS.md`](PARAMETERS.md#pseudonymization-of-the-shipped-data) and `scripts/pseudonymize_data.py`/`scripts/anonymize_depots.py`.
 
 ---
 

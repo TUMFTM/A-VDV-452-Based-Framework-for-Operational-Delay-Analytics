@@ -37,7 +37,7 @@ def main() -> None:
         p.error("--days must be positive")
     start = date.fromisoformat(args.start)
     selected = {(start + timedelta(days=i)).isoformat() for i in range(args.days)}
-    n_soll = _subset(args.source_dir / "soll_stops.csv", args.output_dir / "soll_stops.csv.gz", selected, "betriebstag")
+    n_soll = _subset(args.source_dir / "soll_stops.csv", args.output_dir / "vdv452_data.csv.gz", selected, "betriebstag")
     n_vp = _subset(args.source_dir / "vp.csv", args.output_dir / "vp.csv.gz", selected, "time", timestamp=True)
     print(f"days={min(selected)}..{max(selected)} soll_rows={n_soll} vp_rows={n_vp}")
 

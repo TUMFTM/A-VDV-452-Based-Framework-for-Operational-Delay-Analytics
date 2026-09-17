@@ -129,6 +129,26 @@ every downstream statistic are unchanged — only the labels differ. The
 real→pseudonym mapping is written to a gitignored file and is **not** part of
 the published package.
 
+### Depot anonymization
+
+Deadhead (Ein-/Ausfahrt) trips in `data/soll_stops.csv` connect each
+operator's real depot to the network — the depot's real name/short-code
+(`ort_name`/`ort_ref_ort_name`/`ort_kuerzel`/`ort_ref_ort_kuerzel`) and exact
+coordinates are not covered by the identifier pseudonymization above, so
+`scripts/anonymize_depots.py` handles them separately:
+
+- The depot's name/code fields are renamed to match its already-pseudonymized
+  operator, e.g. `Betriebshof STW` → `Operator A Depot` (Einfahrt/Ausfahrt
+  suffix preserved).
+- Every deadhead trip in this data has exactly two stops (the depot and one
+  productive stop). The depot's published coordinate is moved 500 m along
+  that leg toward the other stop; if the whole leg is under 500 m, the depot
+  point collapses onto the other stop's coordinate instead. The exact real
+  depot location is never published.
+
+Run after `pseudonymize_data.py` (it needs the `unternehmen` pseudonyms
+already in place). Idempotent, same `--check` convention.
+
 ---
 
 ## Acknowledgements
